@@ -2,6 +2,7 @@ use std::{
     fs::File,
     io::{self, BufRead, BufReader},
     path::Path,
+    env,
 };
 
 use std::time::Instant;
@@ -18,8 +19,12 @@ fn elapsed_ms(t1: Instant, t2: Instant) -> f64 {
 
 fn main() {
     println!("Repeated Lines Remover is starting");
+    let args: Vec<String> = env::args().collect();
+    let file_name = &args[1];
+    
+    
     let t1 = Instant::now();
-    let mut lines = lines_from_file("sample.txt").expect("Could not load lines");
+    let mut lines = lines_from_file(file_name).expect("Could not load lines");
     
     lines.sort();
 
@@ -32,7 +37,9 @@ fn main() {
     let mut removed_count = 0;
 
     for (index, line) in lines.iter().enumerate() {
-        if current_common_string != line || index == length_of_lines {
+        let email_in_line = line.split(":").next().unwrap();
+        
+        if current_common_string != email_in_line || index == length_of_lines {
             if length >= 1 || index == length_of_lines  {
                 let si =  start_index-removed_count;
                 let mut li = start_index+length+1-removed_count;
@@ -46,15 +53,18 @@ fn main() {
             length = 0;
         }    
 
-        if current_common_string == line {
+        if current_common_string == email_in_line {
             length = length + 1
         }
 
-       if current_common_string != line{
-           current_common_string = line;
+       if current_common_string != email_in_line{
+           current_common_string = email_in_line;
        }
     }
-    println!("{:?}", cloned_lines);
+
+    let file_content = cloned_lines.iter().map(|x| format!("{}\n", x)).collect::<Vec<_>>();;
+
     let t2= Instant::now();
+    std::fs::write(file_name, file_content.join("")).expect("Unable to write file");
     println!("Benchmark::: {} ms",elapsed_ms(t1,t2))    
 }
