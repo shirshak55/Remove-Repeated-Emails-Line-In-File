@@ -1,6 +1,10 @@
 [package]
 name = "repeated-lines-remover"
-version = "1.1.0"
+description="Removed the duplicate line emails"
+license="MIT"
+homepage="https://github.com/shirshak55/Remove-Repeated-Emails-Line-In-File"
+repository="https://github.com/shirshak55/Remove-Repeated-Emails-Line-In-File"
+version = "1.0.0"
 authors = ["Shirshak <8097377+shirshak55@users.noreply.github.com>"]
 edition = "2018"
 cargo_publish = true
